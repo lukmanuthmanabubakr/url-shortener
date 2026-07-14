@@ -1,9 +1,16 @@
 {
   "name": "url-shortener",
   "private": true,
-  "workspaces": ["api", "web"],
+  "workspaces": [
+    "api",
+    "web"
+  ],
   "scripts": {
     "dev:api": "npm run dev --workspace=api",
-    "build:api": "npm run build --workspace=api"
+    "build:api": "npm run build --workspace=api",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7"
   }
 }
