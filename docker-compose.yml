@@ -1,0 +1,41 @@
+name: urlshortener
+
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: urlshortener_api
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./api:/app
+      - /app/node_modules
+    env_file:
+      - ./api/.env
+    depends_on:
+      - postgres
+      - redis
+  postgres:
+    image: postgres:15-alpine
+    container_name: urlshortener_postgres
+    restart: unless-stopped
+    ports:
+      - "5437:5432"
+    environment:
+      POSTGRES_USER: urlshortener
+      POSTGRES_PASSWORD: urlshortener
+      POSTGRES_DB: urlshortener
+    volumes:
+      - urlshortener_pgdata:/var/lib/postgresql/data
+  redis:
+    image: redis:7-alpine
+    container_name: urlshortener_redis
+    restart: unless-stopped
+    ports:
+      - "6383:6379"
+    volumes:
+      - urlshortener_redisdata:/data
+volumes:
+  urlshortener_pgdata:
+  urlshortener_redisdata:
