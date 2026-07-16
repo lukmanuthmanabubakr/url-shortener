@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Url {
+  id        String       @id @default(uuid())
+  key       String       @unique
+  longUrl   String
+  userId    String?
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  user        User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  clickEvents ClickEvent[]
+
+  @@map("urls")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  urls          Url[]
+  refreshTokens RefreshToken[]
+  apiKeys       ApiKey[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  tokenHash String   @unique
+  userId    String
+  revoked   Boolean  @default(false)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
+}
+
+model ClickEvent {
+  id        String   @id @default(uuid())
+  urlKey    String
+  ipHash    String?
+  userAgent String?
+  referrer  String?
+  createdAt DateTime @default(now())
+
+  url Url @relation(fields: [urlKey], references: [key], onDelete: Cascade)
+
+  @@index([urlKey, createdAt])
+  @@map("click_events")
+}
+
+model ApiKey {
+  id        String    @id @default(uuid())
+  keyHash   String    @unique
+  userId    String
+  name      String
+  revoked   Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  lastUsed  DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("api_keys")
+}

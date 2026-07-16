@@ -8,6 +8,7 @@ services:
     container_name: urlshortener_api
     ports:
       - "4000:4000"
+      - "5555:5555"
     volumes:
       - ./api:/app
       - /app/node_modules
