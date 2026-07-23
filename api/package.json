@@ -19,7 +19,8 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
-    "testMatch": ["**/*.test.ts"]
+    "testMatch": ["**/*.test.ts"],
+    "setupFiles": ["<rootDir>/jest.setup.ts"]
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

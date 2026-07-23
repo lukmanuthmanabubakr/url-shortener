@@ -4,6 +4,7 @@ import { env } from './config/env';
 import { errorHandler } from './middleware/errorHandler';
 import { prisma } from './lib/prisma';
 import { redis } from './lib/redis';
+import { startPoolMonitor } from './services/keyPool';
 
 const app = express();
 const logger = pinoHttp();
@@ -50,6 +51,7 @@ app.get('/health', async (_req, res) => {
 app.use(errorHandler);
 
 // eslint-disable-next-line no-console
-app.listen(env.PORT, () => {
+app.listen(env.PORT, async () => {
   console.log(`API listening on port ${env.PORT}`);
+  await startPoolMonitor();
 });
